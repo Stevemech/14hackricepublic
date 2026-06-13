@@ -34,11 +34,11 @@ const dotGothic = DotGothic16({
   display: "swap",
 });
 
+// Favicon: src/app/icon.svg (gold H on felt), served automatically.
 export const metadata: Metadata = {
   title: "JackRice 16 | Rice University",
   description:
     "Rice University's 16th Annual Hackathon — September 11–13, 2026. Join 800+ of the brightest minds in the nation for 36 hours of relentless creation, collaboration, and building!",
-  icons: { icon: "/images/Hlogo.png" },
 };
 
 export default function RootLayout({

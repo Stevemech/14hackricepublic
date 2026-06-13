@@ -1,61 +1,38 @@
+# JackRice 16 — hackrice.com
 
-This repository is based off of the HackRice 14 codebase. It is deployed using Github Pages and the domain (hackrice.com) is purchased and managed over Namecheap. This repo was previously deployed using Vercel, and youc an feel free to pursue that again next year (we had some issues this year).
+Site for **HackRice 16** (branded *JackRice 16*), Rice University's 16th annual
+hackathon — September 11–13, 2026.
 
+Built with **Next.js 16 (App Router) + Tailwind CSS v4 + Framer Motion + GSAP**.
+The visual identity is a gold-on-felt, dot-matrix casino terminal: the H card and
+all display type are rendered as interactive dot fields on canvas
+(`src/components/hero/`). Design rules live in `design-system/MASTER.md` —
+read the "DESIGN LANGUAGE v2" block before touching styles.
 
-# Deployment Instructions
+## Develop
 
-Install gh-pages if you haven't already:
-`npm install gh-pages --save-dev`
+```bash
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build (fully static output)
+npm run lint
+```
 
-After you push your changes, you can build and deploy with:
-`npm run deploy`
+## Deploy — Vercel
 
-Make sure when you go from Repo -> Settings -> Pages, your source is set to `gh-pages` and the folder is at `/root`.
+The app deploys on Vercel with zero config (auto-detected Next.js):
 
+1. Import this GitHub repo in Vercel.
+2. Add the domain `hackrice.com` in the Vercel project settings.
+3. Point DNS at Vercel (domain is purchased/managed on **Namecheap**).
+4. Disable GitHub Pages in repo settings once DNS has cut over
+   (the old Pages workflow has been removed; the previous static site keeps
+   serving from the last Pages artifact until Pages is disabled).
 
-# Getting Started with Create React App
+## Repo notes
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- `index.html` + `images/` at the repo root are the **legacy static site**,
+  kept for reference. The live app serves assets from `public/images/`.
+- Content source of truth is the legacy `index.html` — schedule and sponsors
+  are placeholders on purpose; don't invent entries.
+- The MLH trust badge must remain fixed at the top of the page per MLH rules.
