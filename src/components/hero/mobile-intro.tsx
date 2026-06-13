@@ -15,6 +15,41 @@ const MAX_R = 1.45;
 const BUILD_MS = 2100;
 const POP_MS = 260;
 const HOLD_MS = 550;
+const SCROLL_MS = 1900; // unhurried glide down to the hero
+
+/** rAF-driven scroll: native smooth scrolling is too quick and not tunable.
+ *  Aborts the moment the visitor takes over (wheel/touch/keys). */
+function glideTo(targetY: number, duration: number) {
+  const startY = window.scrollY;
+  const t0 = performance.now();
+  let aborted = false;
+  const abort = () => {
+    aborted = true;
+  };
+  const opts = { passive: true } as const;
+  window.addEventListener("wheel", abort, opts);
+  window.addEventListener("touchstart", abort, opts);
+  window.addEventListener("keydown", abort, opts);
+  const cleanup = () => {
+    window.removeEventListener("wheel", abort);
+    window.removeEventListener("touchstart", abort);
+    window.removeEventListener("keydown", abort);
+  };
+  const ease = (k: number) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+  const step = (now: number) => {
+    if (aborted) return cleanup();
+    const k = Math.min(1, (now - t0) / duration);
+    // "instant" per frame — the page's CSS scroll-behavior:smooth would
+    // otherwise re-animate every step into a crawl-then-jump.
+    window.scrollTo({
+      top: startY + (targetY - startY) * ease(k),
+      behavior: "instant" as ScrollBehavior,
+    });
+    if (k < 1) requestAnimationFrame(step);
+    else cleanup();
+  };
+  requestAnimationFrame(step);
+}
 
 interface IntroDot {
   x: number;
@@ -66,7 +101,7 @@ export function MobileIntro() {
       offCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const aspect = img.naturalWidth / img.naturalHeight;
-      const cardW = Math.min(width * 0.8, height * 0.74 * aspect);
+      const cardW = Math.min(width * 0.94, height * 0.86 * aspect);
       const cardH = cardW / aspect;
       const ox = (width - cardW) / 2;
       const oy = (height - cardH) / 2;
@@ -138,7 +173,7 @@ export function MobileIntro() {
       if (!scrollFired && t > BUILD_MS + POP_MS + HOLD_MS) {
         scrollFired = true;
         if (!userScrolled && window.scrollY < 40) {
-          window.scrollTo({ top: section.offsetTop + section.offsetHeight, behavior: "smooth" });
+          glideTo(section.offsetTop + section.offsetHeight, SCROLL_MS);
         }
       }
       raf = requestAnimationFrame(frame);
