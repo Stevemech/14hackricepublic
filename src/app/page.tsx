@@ -1,4 +1,5 @@
 import HeroAscii from "@/components/ui/hero-ascii";
+import { MobileIntro } from "@/components/hero/mobile-intro";
 import { SiteNav } from "@/components/site-nav";
 import { MlhBadge } from "@/components/mlh-badge";
 import { AboutSection } from "@/components/sections/about";
@@ -21,6 +22,7 @@ export default function Home() {
       </a>
       <MlhBadge />
       <SiteNav />
+      <MobileIntro />
       <main id="main" className="flex-1">
         <HeroAscii />
         <AboutSection />

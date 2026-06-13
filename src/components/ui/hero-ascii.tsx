@@ -9,7 +9,6 @@
 // capped frame so ultrawide monitors keep the composition cohesive.
 
 import { motion, useReducedMotion } from "framer-motion";
-import { AsciiField } from "@/components/hero/ascii-field";
 import { DotScene } from "@/components/hero/dot-scene";
 import { DotText } from "@/components/hero/dot-text";
 import { Countdown } from "@/components/hero/countdown";
@@ -46,9 +45,6 @@ function Reveal({
 export default function HeroAscii() {
   return (
     <section className="relative min-h-dvh overflow-hidden bg-felt felt-texture">
-      {/* Mobile: drifting suit pips stand in for the original's stars */}
-      <AsciiField className="absolute inset-0 h-full w-full lg:hidden" />
-
       {/* Corner frame accents — at the screen edges, framing the viewport */}
       <div aria-hidden="true">
         <div className="absolute top-20 left-0 z-20 h-8 w-8 border-t-2 border-l-2 border-gold/30 lg:h-12 lg:w-12" />
