@@ -25,8 +25,8 @@ function partsAt(now: number): Parts {
 
 function Digit({ value, animate }: { value: string; animate: boolean }) {
   return (
-    // Fixed width: DotGothic16 isn't strictly monospace, so the cell is
-    // pinned to keep the readout from jittering every second.
+    // Fixed-size cell: clips the per-second slide animation and keeps the
+    // readout from reflowing as digits change.
     <span className="relative block h-[1.4em] w-[1.6em] overflow-hidden text-center text-[clamp(1.5rem,2.2vw,2.6rem)] text-gold-bright">
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span

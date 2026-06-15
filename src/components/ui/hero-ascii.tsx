@@ -8,7 +8,8 @@
 // H card + "16" chip rendered as interactive dot fields. Layout lives in a
 // capped frame so ultrawide monitors keep the composition cohesive.
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { DotScene } from "@/components/hero/dot-scene";
 import { DotText } from "@/components/hero/dot-text";
 import { Countdown } from "@/components/hero/countdown";
@@ -16,9 +17,51 @@ import { Typewriter } from "@/components/motion/typewriter";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-// Deterministic heights for the footer "signal" bars — the original used
-// Math.random() in render, which breaks SSR hydration.
-const SIGNAL_BARS = [9, 14, 6, 12, 8, 15, 7, 11];
+// Footer ticker quips — half poker table, half terminal. Rotates so the strip
+// rewards a second look instead of just restating facts already on the page.
+const QUIPS = [
+  "sudo deal me in",
+  "P(sleep) → 0.00",
+  "all-in on caffeine",
+  "the house always renders",
+  "while (awake) { hack(); }",
+  "git push --force (it's the flop)",
+  "EV positive, sleep negative",
+  "404: sleep not found",
+  "may your builds compile",
+  "npm install victory",
+  "stack the deck, not the trace",
+  "// TODO: win hackathon",
+];
+
+// One rotating quip slot. SSR-safe: first paint is deterministic (index 0 +
+// offset), the interval only advances client-side after mount.
+function QuipTicker({ offset = 0, className }: { offset?: number; className?: string }) {
+  const reduced = useReducedMotion();
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(() => setI((n) => (n + 1) % QUIPS.length), 3800);
+    return () => clearInterval(id);
+  }, [reduced]);
+  const quip = QUIPS[(i + offset) % QUIPS.length];
+  return (
+    <span className={`relative inline-block ${className ?? ""}`}>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={quip}
+          initial={reduced ? false : { opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reduced ? { opacity: 0 } : { opacity: 0, y: -5 }}
+          transition={{ duration: 0.3 }}
+          className="block whitespace-nowrap text-gold/70"
+        >
+          {quip}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
 
 function Reveal({
   children,
@@ -44,13 +87,12 @@ function Reveal({
 
 export default function HeroAscii() {
   return (
-    <section className="relative min-h-dvh overflow-hidden bg-felt felt-texture">
-      {/* Corner frame accents — at the screen edges, framing the viewport */}
+    <section className="relative h-dvh overflow-hidden bg-felt felt-texture">
+      {/* Top corner frame accents — framing the top of the viewport. The
+          bottom of the composition is capped by the footer strip below. */}
       <div aria-hidden="true">
         <div className="absolute top-20 left-0 z-20 h-8 w-8 border-t-2 border-l-2 border-gold/30 lg:h-12 lg:w-12" />
         <div className="absolute top-20 right-0 z-20 h-8 w-8 border-t-2 border-r-2 border-gold/30 lg:h-12 lg:w-12" />
-        <div className="absolute bottom-[5vh] left-0 z-20 h-8 w-8 border-b-2 border-l-2 border-gold/30 lg:h-12 lg:w-12" />
-        <div className="absolute right-0 bottom-[5vh] z-20 h-8 w-8 border-b-2 border-r-2 border-gold/30 lg:h-12 lg:w-12" />
       </div>
 
       {/* Layout frame: caps the composition so ultrawide stays cohesive */}
@@ -63,7 +105,7 @@ export default function HeroAscii() {
         {/* pointer-events pass through to the card canvas except on real content */}
         <div className="pointer-events-none relative z-10 mt-[4vh] flex min-h-dvh items-center pt-20 lg:pt-0">
           <div className="w-full px-6 lg:ml-[7%] lg:max-w-[46%] lg:px-10">
-            <div className="pointer-events-auto relative">
+            <div className="hero-content-fit pointer-events-auto relative">
               {/* Top decorative line — the real eyebrow instead of "001" */}
               <Reveal delay={0.05}>
                 <div className="mb-3 flex items-center gap-2 opacity-80 lg:mb-4">
@@ -165,34 +207,19 @@ export default function HeroAscii() {
       </div>
 
       {/* Bottom footer strip */}
-      <div className="absolute right-0 bottom-[5vh] left-0 z-20 border-t border-gold/20 bg-felt/40 backdrop-blur-sm">
+      <div className="absolute right-0 bottom-0 left-0 z-20 border-t border-gold/20 bg-felt/40 backdrop-blur-sm">
         <div className="container mx-auto flex items-center justify-between px-4 py-3 lg:px-8 lg:py-4">
           <div className="font-dot flex items-center gap-3 text-[clamp(9px,0.75vw,13px)] text-stone-500 lg:gap-6">
             <span className="hidden lg:inline">TABLE.ACTIVE</span>
             <span className="lg:hidden">TBL.ACT</span>
-            <div className="hidden gap-1 lg:flex" aria-hidden="true">
-              {SIGNAL_BARS.map((h, i) => (
-                <div key={i} className="w-1 bg-gold/30" style={{ height: `${h}px` }} />
-              ))}
-            </div>
-            <span>V16.0.0</span>
-            <span className="hidden lg:inline">29.7174°N · 95.4018°W</span>
+            <QuipTicker offset={0} className="hidden sm:inline-block" />
           </div>
 
-          <div className="font-dot flex items-center gap-2 text-[clamp(9px,0.75vw,13px)] text-stone-500 lg:gap-4">
-            <span className="hidden lg:inline">◐ DEALING</span>
-            <div className="flex gap-1" aria-hidden="true">
-              <div className="h-1 w-1 animate-pulse rounded-full bg-gold/60" />
-              <div
-                className="h-1 w-1 animate-pulse rounded-full bg-gold/40"
-                style={{ animationDelay: "0.2s" }}
-              />
-              <div
-                className="h-1 w-1 animate-pulse rounded-full bg-gold/20"
-                style={{ animationDelay: "0.4s" }}
-              />
-            </div>
-            <span className="hidden lg:inline">FRAME: ∞</span>
+          <div className="font-dot flex items-center gap-3 text-[clamp(9px,0.75vw,13px)] text-stone-500 lg:gap-5">
+            <QuipTicker
+              offset={Math.floor(QUIPS.length / 2)}
+              className="hidden sm:inline-block"
+            />
             <span aria-hidden="true" className="tracking-widest text-gold/60">
               ♠ ♥ ♦ ♣
             </span>

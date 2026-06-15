@@ -6,7 +6,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { SectionShell } from "@/components/section-shell";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { DotText } from "@/components/hero/dot-text";
+import { DotArt } from "@/components/hero/dot-art";
+import { SUIT_PAINTERS } from "@/components/hero/suit-shapes";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -126,10 +127,13 @@ export function TracksSection() {
             <CornerPip track={track} />
             <CornerPip track={track} flipped />
 
-            {/* Center pip rendered in dots */}
-            <div className="mx-auto mb-4 w-20">
-              <DotText lines={[track.suit]} maxFontPx={72} />
-            </div>
+            {/* Center pip — a symmetric vector suit traced as a dot field */}
+            <DotArt
+              paint={SUIT_PAINTERS[track.suit]}
+              pitch={3}
+              contain={0.82}
+              className="mx-auto mb-4 block h-20 w-20"
+            />
 
             <h3 className="font-dot mb-3 text-[clamp(1rem,1.1vw,1.25rem)] tracking-[0.1em] text-gold-bright uppercase">
               {track.name}

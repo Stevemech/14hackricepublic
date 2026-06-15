@@ -14,7 +14,8 @@ export function MlhBadge() {
       rel="noopener noreferrer"
     >
       {/* Ribbon extension: fills the gap above the badge while it's pulled
-          down (MLH yellow #f8b92a, matched to the asset's body insets) */}
+          down. Color is MLH's exact official ribbon yellow (#f8b92a, the
+          asset's .cls-1 fill) so it's seamless with the badge body. */}
       <span
         aria-hidden="true"
         className="absolute bottom-full left-[4.5%] h-8 w-[90.5%] bg-[#f8b92a]"

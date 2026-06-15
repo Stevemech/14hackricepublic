@@ -8,6 +8,8 @@ import { useGSAP } from "@gsap/react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { SectionShell } from "@/components/section-shell";
 import { ScrollReveal, EASE } from "@/components/scroll-reveal";
+import { DotArt } from "@/components/hero/dot-art";
+import { FlipAvatar } from "@/components/sections/flip-avatar";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -25,34 +27,40 @@ const itemVariants: Variants = {
 // Gold corner trellises drift with a gentle GSAP scroll parallax; the
 // H watermark holds the center of the table.
 
+// linkedin: fill in each person's profile URL when ready — the flip-to-chip
+// link icon already points the anchor here.
 interface Director {
   name: string;
   src: string;
+  linkedin?: string;
 }
 
 interface Member {
   name: string;
   role: string;
   src: string;
+  linkedin?: string;
 }
 
 const DIRECTORS: Director[] = [
-  { name: "Hazel Goetsch", src: "/images/hr-hazel.jpg" },
-  { name: "Jacob King", src: "/images/hr-jacob.jpg" },
-  { name: "Varshini Loganathan", src: "/images/hr-varshini.jpg" },
+  { name: "Hazel Goetsch", src: "/images/hr-hazel.jpg", linkedin: "https://www.linkedin.com/in/hazel-goetsch/" },
+  { name: "Jacob King", src: "/images/hr-jacob.jpg", linkedin: "https://www.linkedin.com/in/jacob-l-king/" },
+  { name: "Varshini Loganathan", src: "/images/hr-varshini.jpg", linkedin: "https://www.linkedin.com/in/varshini-loganathan/" },
 ];
 
 const MEMBERS: Member[] = [
-  { name: "Milan Cohen Camarena", role: "Public Relations", src: "/images/hr-milan.jpg" },
-  { name: "Abena Poku", role: "Logistics", src: "/images/hr-abena.jpg" },
-  { name: "Saanvi Mukkara", role: "Logistics", src: "/images/hr-saanvi.jpg" },
-  { name: "Henry Shan", role: "Tracks & Workshops", src: "/images/hr-henry.jpg" },
-  { name: "Oscar Pan", role: "Tracks & Workshops", src: "/images/hr-oscar.png" },
-  { name: "Sophia Chen", role: "Tracks & Workshops", src: "/images/hr-sophia.jpg" },
-  { name: "Jacqueline Chung", role: "Industry Outreach", src: "/images/hr-jacqueline.jpg" },
-  { name: "Sanjana Dabbiru", role: "Design Team", src: "/images/hr-sanjana.jpg" },
-  { name: "Tony Martinez", role: "Design Team", src: "/images/hr-tony.jpg" },
-  { name: "Steve Zhang", role: "Design Team", src: "/images/hr-steve.jpg" },
+  { name: "Milan Cohen Camarena", role: "Public Relations", src: "/images/hr-milan.jpg", linkedin: "https://www.linkedin.com/in/milan-cohen-camarena-a4ba04384/" },
+  { name: "Abena Poku", role: "Logistics", src: "/images/hr-abena.jpg", linkedin: "https://www.linkedin.com/in/abena-poku-78211935a/" },
+  { name: "Saanvi Mukkara", role: "Logistics", src: "/images/hr-saanvi.jpg", linkedin: "https://www.linkedin.com/in/saanvi-mukkara/" },
+  { name: "Henry Shan", role: "Tracks & Workshops", src: "/images/hr-henry.jpg", linkedin: "https://www.linkedin.com/in/henry-shan-04185a380/" },
+  { name: "Oscar Pan", role: "Tracks & Workshops", src: "/images/hr-oscar.png", linkedin: "https://www.linkedin.com/in/oscar-pan-b58991340/" },
+  { name: "Sophia Chen", role: "Tracks & Workshops", src: "/images/hr-sophia.jpg", linkedin: "https://www.linkedin.com/in/sophiaschen88/" },
+  { name: "Jacqueline Chung", role: "Industry Outreach", src: "/images/hr-jacqueline.jpg", linkedin: "https://www.linkedin.com/in/jacqueline-chung-7a93b0330/" },
+  { name: "Sanjana Dabbiru", role: "Design Team", src: "/images/hr-sanjana.jpg", linkedin: "https://www.linkedin.com/in/sanjana-iru/" },
+  // Tony has no LinkedIn yet — left blank so his portrait stays static (no
+  // flip/chip). Add a URL here to restore the poker-chip animation.
+  { name: "Tony Martinez", role: "Design Team", src: "/images/hr-tony.jpg", linkedin: "" },
+  { name: "Steve Zhang", role: "Design Team", src: "/images/hr-steve.jpg", linkedin: "https://www.linkedin.com/in/stevezhangsandiego" },
 ];
 
 // Corner trellises (legacy art). Bottom pair reuses the opposite top asset
@@ -117,16 +125,13 @@ export function TeamSection() {
             key={t.pos}
             aria-hidden="true"
             data-drift={t.drift}
-            className={`team-trellis pointer-events-none absolute opacity-80 ${t.pos}`}
+            className={`team-trellis pointer-events-none absolute opacity-90 ${t.pos}`}
           >
-            <Image
+            <DotArt
               src={t.src}
-              alt=""
-              width={192}
-              height={192}
-              className={`h-36 w-36 object-contain md:h-48 md:w-48 ${
-                t.rotated ? "rotate-180" : ""
-              }`}
+              pitch={4}
+              contain={1}
+              className={`h-36 w-36 md:h-48 md:w-48 ${t.rotated ? "rotate-180" : ""}`}
             />
           </div>
         ))}
@@ -146,13 +151,7 @@ export function TeamSection() {
                 key={d.name}
                 className="group flex w-36 flex-col items-center text-center"
               >
-                  <Image
-                    src={d.src}
-                    alt={d.name}
-                    width={96}
-                    height={96}
-                    className="h-24 w-24 rounded-full border-2 border-gold/40 object-cover transition-colors duration-300 group-hover:border-gold-bright"
-                  />
+                  <FlipAvatar src={d.src} alt={d.name} linkedin={d.linkedin} size="lg" />
                   <h3 className="font-dot mt-4 text-[clamp(0.95rem,1.05vw,1.2rem)] leading-snug text-stone-300">
                     {d.name}
                   </h3>
@@ -190,13 +189,7 @@ export function TeamSection() {
                 key={m.name}
                 className="group flex flex-col items-center text-center"
               >
-                  <Image
-                    src={m.src}
-                    alt={m.name}
-                    width={64}
-                    height={64}
-                    className="h-16 w-16 rounded-full border border-gold/25 object-cover transition-colors duration-300 group-hover:border-gold/60"
-                  />
+                  <FlipAvatar src={m.src} alt={m.name} linkedin={m.linkedin} size="sm" />
                   <h3 className="font-dot mt-3 text-[clamp(0.7rem,0.75vw,0.85rem)] leading-snug text-stone-300">
                     {m.name}
                   </h3>

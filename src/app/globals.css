@@ -42,7 +42,7 @@
   --font-sans: var(--font-inter);
   --font-mono: var(--font-space-mono);
   --font-ascii: "JetBrains Mono Ascii", ui-monospace, "Menlo", "Consolas", monospace;
-  --font-dot: var(--font-dotgothic);
+  --font-dot: var(--font-vt323);
   --font-display: var(--font-playfair);
   --font-heading: var(--font-playfair);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -166,6 +166,12 @@
   section[id] {
     scroll-margin-top: 5.5rem;
   }
+  /* VT323 (the --font-dot face) sits small in its em box. Normalize its
+     apparent size so body copy reads at the visual scale the other faces did,
+     without having to bump every font-size utility individually. */
+  .font-dot {
+    font-size-adjust: 0.58;
+  }
   html {
     /* The site-wide cursor is a JackRice poker chip; it flips to its bright
        face over interactive elements. */
@@ -251,6 +257,119 @@
         var(--color-gold) 2px
       );
     background-size: 3px 3px;
+  }
+
+  /* Hero content auto-fit. The hero's left content column is vertically
+     centered while the footer strip is pinned near the bottom. On shorter
+     laptop viewports the centered stack grows tall enough to collide with
+     that footer, so shrink it in steps until it clears. Desktop layout only
+     (≥1024px) — phones use a separate stacked layout and stay untouched.
+     Ordered smallest-last so the tightest height wins via source order. */
+  @media (min-width: 1024px) {
+    .hero-content-fit {
+      transform-origin: center center;
+    }
+    @media (max-height: 850px) {
+      .hero-content-fit {
+        transform: scale(0.95);
+      }
+    }
+    @media (max-height: 780px) {
+      .hero-content-fit {
+        transform: scale(0.88);
+      }
+    }
+    @media (max-height: 710px) {
+      .hero-content-fit {
+        transform: scale(0.8);
+      }
+    }
+    @media (max-height: 640px) {
+      .hero-content-fit {
+        transform: scale(0.72);
+      }
+    }
+  }
+
+  /* Gently pulsing gold glow for a highlighted link (the MLH Code of
+     Conduct). The 0%/100% frame is the resting glow, so the reduced-motion
+     freeze leaves it lit rather than dark. */
+  @keyframes link-glow {
+    0%,
+    100% {
+      text-shadow:
+        0 0 7px rgba(227, 184, 90, 0.55),
+        0 0 16px rgba(227, 184, 90, 0.3);
+    }
+    50% {
+      text-shadow:
+        0 0 11px rgba(227, 184, 90, 0.9),
+        0 0 24px rgba(227, 184, 90, 0.55);
+    }
+  }
+  .link-glow {
+    animation: link-glow 2.6s ease-in-out infinite;
+  }
+
+  /* Glowing holographic dot-matrix poker chip — the flip side of a team
+     portrait. The gold dot field + edge-spots are drawn by the dot engine on a
+     canvas; here we supply the dark felt base and a pulsing gold bloom. */
+  @keyframes chip-glow {
+    0%,
+    100% {
+      box-shadow:
+        0 0 12px rgba(227, 184, 90, 0.4),
+        inset 0 0 10px rgba(227, 184, 90, 0.12);
+    }
+    50% {
+      box-shadow:
+        0 0 22px rgba(227, 184, 90, 0.72),
+        inset 0 0 14px rgba(227, 184, 90, 0.22);
+    }
+  }
+  .chip-face {
+    background-color: #16120b;
+    animation: chip-glow 2.4s ease-in-out infinite;
+  }
+  /* Holographic foil: a sweeping sheen plus a drifting iridescent wash,
+     screen-blended over the gold dots so the chip catches the light. */
+  @keyframes chip-holo {
+    0% {
+      background-position:
+        -60% 0,
+        0 0;
+      filter: hue-rotate(0deg);
+    }
+    100% {
+      background-position:
+        160% 0,
+        0 0;
+      filter: hue-rotate(50deg);
+    }
+  }
+  .chip-holo {
+    background-image:
+      linear-gradient(
+        115deg,
+        transparent 32%,
+        rgba(255, 255, 255, 0.4) 47%,
+        rgba(255, 255, 255, 0.08) 53%,
+        transparent 66%
+      ),
+      conic-gradient(
+        from 0deg,
+        rgba(240, 200, 105, 0.35),
+        rgba(150, 235, 205, 0.3),
+        rgba(205, 175, 240, 0.32),
+        rgba(240, 175, 195, 0.3),
+        rgba(240, 200, 105, 0.35)
+      );
+    background-size:
+      220% 100%,
+      100% 100%;
+    mix-blend-mode: screen;
+    opacity: 0.55;
+    animation: chip-holo 3.6s linear infinite;
   }
 
   /* Gold foil gradient for the ASCII wordmark & display moments */

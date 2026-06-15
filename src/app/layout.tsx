@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DotGothic16, Inter, Playfair_Display, Space_Mono } from "next/font/google";
+import { Inter, Playfair_Display, Space_Mono, VT323 } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -26,9 +26,12 @@ const spaceMono = Space_Mono({
 // globals.css: next/font's latin subsetting strips the box-drawing, block,
 // and suit glyphs the art is made of, breaking column alignment.
 
-// Dot-matrix display font for the brand wordmark
-const dotGothic = DotGothic16({
-  variable: "--font-dotgothic",
+// Primary UI/body face (--font-dot): VT323, a CRT-terminal monospace. Keeps
+// the edgy hacker character of the old pixel font but with clean, aligned
+// glyphs that actually read. Single weight (400) — emphasis comes from color,
+// not bold.
+const vt323 = VT323({
+  variable: "--font-vt323",
   subsets: ["latin"],
   weight: ["400"],
   display: "swap",
@@ -49,7 +52,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} ${spaceMono.variable} ${dotGothic.variable} h-full antialiased`}
+      className={`${inter.variable} ${playfair.variable} ${spaceMono.variable} ${vt323.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-felt">
         <div aria-hidden="true" className="dot-grid-overlay" />

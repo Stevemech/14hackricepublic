@@ -2,8 +2,8 @@ import { SectionShell } from "@/components/section-shell";
 import { ScrollReveal } from "@/components/scroll-reveal";
 
 // 006 — Frequently Asked Questions. Copy carried verbatim from the legacy
-// site. Native <details>/<summary> accordion; suit pips rotate ♠ ♥ ♦ ♣
-// across the items (decorative only).
+// site. Always-open cards on an equal-height grid; suit pips rotate
+// ♠ ♥ ♦ ♣ across the items (decorative only).
 
 const SUITS = [
   { glyph: "♠", color: "text-gold" },
@@ -39,7 +39,7 @@ const FAQS: FaqItem[] = [
           href="https://mlh.io/code-of-conduct"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gold underline-offset-4 transition-colors duration-200 hover:text-gold-bright hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-bright"
+          className="link-glow font-semibold text-gold-bright underline decoration-gold/50 underline-offset-4 transition-colors duration-200 hover:text-gold-bright hover:decoration-gold-bright focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-bright"
         >
           MLH Code of Conduct
         </a>
@@ -136,33 +136,27 @@ const FAQS: FaqItem[] = [
 export function FaqSection() {
   return (
     <SectionShell id="faq" number="006" title="Frequently Asked Questions">
-      <div className="grid items-start gap-4 md:grid-cols-2">
+      <div className="grid auto-rows-fr items-stretch gap-4 md:grid-cols-2">
         {FAQS.map((item, i) => {
           const suit = SUITS[i % SUITS.length];
           return (
-            <ScrollReveal key={item.question} delay={(i % 2) * 0.08}>
-              <details className="group border border-gold/25 bg-felt-raised/50 transition-colors duration-300 open:border-gold/50">
-                <summary className="flex list-none items-baseline gap-3 px-5 py-4 select-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-bright [&::-webkit-details-marker]:hidden">
+            <ScrollReveal key={item.question} delay={(i % 2) * 0.08} className="h-full">
+              <div className="flex h-full flex-col border border-gold/40 bg-felt-raised/50 px-5 py-4 transition-colors duration-300 hover:border-gold/60">
+                <div className="flex items-baseline gap-3">
                   <span
                     aria-hidden="true"
                     className={`font-dot text-[clamp(0.85rem,1vw,1.1rem)] ${suit.color}`}
                   >
                     {suit.glyph}
                   </span>
-                  <h3 className="font-dot flex-1 text-[clamp(0.85rem,1vw,1.1rem)] leading-snug text-gold-bright">
+                  <h3 className="font-dot flex-1 text-[clamp(0.9rem,1vw,1.1rem)] leading-snug font-semibold text-gold-bright">
                     {item.question}
                   </h3>
-                  <span
-                    aria-hidden="true"
-                    className="font-dot text-[clamp(1rem,1.1vw,1.25rem)] leading-none text-gold transition-transform duration-200 group-open:rotate-45"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="font-dot px-5 pb-5 pl-[calc(1.25rem+1.6em)] text-[clamp(0.78rem,0.85vw,0.95rem)] leading-relaxed text-stone-400">
+                </div>
+                <p className="font-dot mt-3 pl-[1.6em] text-[clamp(0.82rem,0.9vw,1rem)] leading-relaxed text-stone-300">
                   {item.answer}
                 </p>
-              </details>
+              </div>
             </ScrollReveal>
           );
         })}
